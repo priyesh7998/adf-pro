@@ -1,0 +1,148 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adfpriyesh"
+		},
+		"schedule_properties_scheduled_parameters_schema": {
+			"type": "string",
+			"defaultValue": "source"
+		},
+		"schedule_properties_scheduled_parameters_table": {
+			"type": "string",
+			"defaultValue": "Orders"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/scheduled')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Execute Pipeline",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ingestion",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"schema": {
+									"value": "@pipeline().parameters.schema",
+									"type": "Expression"
+								},
+								"table": {
+									"value": "@pipeline().parameters.table",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Alart",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Execute Pipeline",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {},
+							"url": {
+								"value": "https://prod-00.centralindia.logic.azure.com:443/workflows/f45d900aef4f4e899f8105405843b6cf/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=Ob6G-NrRI2FKLPGGuCtXxKIxhm0L-aMGsHkKlwK29FM",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "{\n    pipeline_name : \"@{pipeline().Pipeline}\",\n    pipeline_runId : \"@{pipeline().RunId}\"\n}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"schema": {
+						"type": "string",
+						"defaultValue": "source"
+					},
+					"table": {
+						"type": "string",
+						"defaultValue": "Orders"
+					},
+					"backdate": {
+						"type": "string",
+						"defaultValue": "''"
+					}
+				},
+				"folder": {
+					"name": "Initial_pipeline_c-ingestion"
+				},
+				"annotations": [],
+				"lastPublishTime": "2026-09-24T13:16:05Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/schedule')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "scheduled",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"schema": "[parameters('schedule_properties_scheduled_parameters_schema')]",
+							"table": "[parameters('schedule_properties_scheduled_parameters_table')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 1,
+						"startTime": "2026-09-25T11:00:00",
+						"endTime": "2026-09-26T11:00:00",
+						"timeZone": "India Standard Time"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/scheduled')]"
+			]
+		}
+	]
+}
