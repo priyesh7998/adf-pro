@@ -358,7 +358,7 @@
 							"p_file": "run.csv"
 						}
 					},
-					"enableLogging": true,
+					"enableLogging": false,
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
 						"recursive": true,
