@@ -3,13 +3,20 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Validation",
+				"name": "Validate",
 				"type": "Validation",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
+					"dataset": {
+						"referenceName": "ls_csv_dynamic_rev",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_container": "source",
+							"p_folder": "trigger",
+							"p_file": "run.csv"
+						}
+					},
 					"timeout": "0.12:00:00",
 					"sleep": 10
 				}
@@ -17,7 +24,14 @@
 			{
 				"name": "Get Metadata",
 				"type": "GetMetadata",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Validate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -313,6 +327,43 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Delete",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "ForEachFile",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ls_csv_dynamic_rev",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_container": "source",
+							"p_folder": "trigger",
+							"p_file": "run.csv"
+						}
+					},
+					"enableLogging": true,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
 				}
 			}
 		],

@@ -1,0 +1,25 @@
+{
+	"name": "TriggerBasedOnValidation",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "03_file_diversion",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 10,
+				"startTime": "2026-10-07T17:40:00",
+				"endTime": "2026-10-09T20:40:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}
