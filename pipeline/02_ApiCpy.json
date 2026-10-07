@@ -23,6 +23,8 @@
 				"name": "CopyData",
 				"description": "Here We Choose Other \"Pagination rules\n\" to copy data from api\nsee_  Source section - Pagination rules\n\nThis will copy all from each page of  API URL",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
