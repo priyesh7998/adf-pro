@@ -1,0 +1,15 @@
+{
+	"name": "ls_api_data_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "rev_ls_rest_pokemon_api",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "?offset={offset}"
+		},
+		"schema": []
+	}
+}
