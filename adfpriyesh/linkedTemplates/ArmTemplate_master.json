@@ -43,6 +43,10 @@
 			"type": "string",
 			"defaultValue": "Orders"
 		},
+		"rev_ls_rest_pokemon_api_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://pokeapi.co/api/v2/pokemon"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -90,6 +94,9 @@
 					},
 					"ls_datalake_properties_typeProperties_url": {
 						"value": "[parameters('ls_datalake_properties_typeProperties_url')]"
+					},
+					"rev_ls_rest_pokemon_api_properties_typeProperties_url": {
+						"value": "[parameters('rev_ls_rest_pokemon_api_properties_typeProperties_url')]"
 					}
 				}
 			},

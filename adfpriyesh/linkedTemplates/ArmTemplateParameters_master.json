@@ -32,6 +32,9 @@
 		"schedule_properties_scheduled_parameters_table": {
 			"value": "Orders"
 		},
+		"rev_ls_rest_pokemon_api_properties_typeProperties_url": {
+			"value": "https://pokeapi.co/api/v2/pokemon"
+		},
 		"containerUri": {
 			"value": ""
 		},
