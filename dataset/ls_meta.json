@@ -10,7 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "trips.csv",
 				"folderPath": "files",
 				"fileSystem": "source"
 			},
